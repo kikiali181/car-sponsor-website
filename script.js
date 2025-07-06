@@ -4,8 +4,58 @@ let globalFontSettings = {
     applyToAll: false
 };
 
+// 数据API配置
+const DATA_CONFIG = {
+    dataUrl: './data.json',
+    githubRepo: 'kikiali81/car-sponsor-website', // 你的GitHub仓库
+    githubToken: null // 暂时不需要，只读取
+};
+
+// 从GitHub加载数据
+async function loadDataFromGitHub() {
+    try {
+        const response = await fetch(DATA_CONFIG.dataUrl + '?t=' + Date.now());
+        if (response.ok) {
+            const data = await response.json();
+            
+            // 更新全局数据
+            vehiclesData = data.vehicles || [];
+            siteSettings = data.siteSettings || siteSettings;
+            sponsorsData = data.sponsors || sponsorsData;
+            paymentQRCodes = data.paymentQRCodes || paymentQRCodes;
+            
+            console.log('✅ 数据加载成功，来自GitHub');
+            return true;
+        }
+    } catch (error) {
+        console.log('⚠️ GitHub数据加载失败，使用默认数据:', error);
+    }
+    return false;
+}
+
+// 保存数据到GitHub（需要配置GitHub Token）
+async function saveDataToGitHub() {
+    // 这个功能需要GitHub Personal Access Token
+    // 现在先显示提示
+    showNotification('💡 配置已保存到本地，上传到GitHub需要额外配置');
+    
+    // 同时保存到localStorage作为备份
+    const dataToSave = {
+        vehicles: vehiclesData,
+        siteSettings: siteSettings,
+        sponsors: sponsorsData,
+        paymentQRCodes: paymentQRCodes,
+        lastUpdated: new Date().toISOString()
+    };
+    
+    localStorage.setItem('websiteData', JSON.stringify(dataToSave));
+}
+
 // 页面加载动画
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // 先尝试从GitHub加载数据
+    await loadDataFromGitHub();
+    
     // 初始化页面
     renderVehiclesGrid();
     renderSponsorsGrid();
@@ -560,6 +610,7 @@ function deleteVehicle(id) {
     vehiclesData = vehiclesData.filter(v => v.id !== id);
     renderVehiclesGrid();
     loadVehiclesList();
+    saveDataToGitHub(); // 保存到GitHub
     showNotification('车辆删除成功！');
 }
 
@@ -696,6 +747,7 @@ document.getElementById('addVehicleForm').addEventListener('submit', function(e)
     vehiclesData.push(newVehicle);
     renderVehiclesGrid();
     loadVehiclesList();
+    saveDataToGitHub(); // 保存到GitHub
     this.reset();
     
     // 重置图片相关状态
@@ -771,6 +823,7 @@ document.getElementById('sponsorForm').addEventListener('submit', function(e) {
         sponsorsData[level].name = name;
         renderSponsorsGrid();
         loadAdminSettings(); // 更新管理面板中的赞助商预览
+        saveDataToGitHub(); // 保存到GitHub
         showNotification('赞助商更新成功！');
         this.reset();
     }
@@ -787,6 +840,7 @@ document.getElementById('settingsForm').addEventListener('submit', function(e) {
     siteSettings.vehiclesSectionTitle = document.getElementById('vehiclesSectionTitle').value;
     
     updateSiteSettings();
+    saveDataToGitHub(); // 保存到GitHub
     showNotification('网站设置保存成功！');
 });
 
@@ -1195,6 +1249,7 @@ function initializePaymentQRUpload() {
 // 保存支付二维码到本地存储
 function savePaymentQRCodes() {
     localStorage.setItem('paymentQRCodes', JSON.stringify(paymentQRCodes));
+    saveDataToGitHub(); // 同时保存到GitHub
 }
 
 // 加载支付二维码

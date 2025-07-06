@@ -1,0 +1,46 @@
+{
+  "vehicles": [
+    {
+      "id": 1640000000000,
+      "name": "警用超跑",
+      "type": "premium",
+      "speed": "350km/h",
+      "power": "800HP",
+      "engine": "V8涡轮增压",
+      "sponsor": "警察局",
+      "price": "200",
+      "badge": "超级跑车",
+      "image": null,
+      "font": "default"
+    }
+  ],
+  "siteSettings": {
+    "title": "Grizzly 充电车辆展示",
+    "subtitle": "Premium Electric Vehicles Collection",
+    "copyright": "© 2024 Grizzly 充电车辆展示 | 感谢所有赞助商的支持",
+    "vehiclesSectionTitle": "充电车辆展示",
+    "sponsorsSectionTitle": "感谢给我们的充电"
+  },
+  "sponsors": {
+    "diamond": {
+      "title": "充电者",
+      "name": "超级汽车集团",
+      "icon": "fas fa-crown"
+    },
+    "platinum": {
+      "title": "充电者",
+      "name": "极速改装店",
+      "icon": "fas fa-gem"
+    },
+    "gold": {
+      "title": "充电者",
+      "name": "梦想车行",
+      "icon": "fas fa-star"
+    }
+  },
+  "paymentQRCodes": {
+    "wechat": null,
+    "alipay": null
+  },
+  "lastUpdated": "2024-01-01T00:00:00.000Z"
+}
