@@ -13,6 +13,20 @@
       "image": null,
       "font": "default"
     }
+        ,
+    {
+      "id": 1640000000001,
+      "name": "道奇",
+      "type": "premium",
+      "speed": "300km/h",
+      "power": "700HP",
+      "engine": "V8",
+      "sponsor": "道奇经销商",
+      "price": "510",
+      "badge": "肌肉车",
+      "image": null,
+      "font": "default"
+    }
   ],
   "siteSettings": {
     "title": "Grizzly 充电车辆展示",
