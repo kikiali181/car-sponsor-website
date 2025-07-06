@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grizzly 充电车辆展示</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 隐藏的管理面板 -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-header">
+            <h2><i class="fas fa-cog"></i> 管理面板</h2>
+            <button id="closeAdmin" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="admin-content">
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="vehicles">车辆管理</button>
+                <button class="tab-btn" data-tab="sponsors">赞助商管理</button>
+                <button class="tab-btn" data-tab="bills">账单管理</button>
+                <button class="tab-btn" data-tab="settings">系统设置</button>
+            </div>
+            
+            <!-- 车辆管理 -->
+            <div id="vehicles-tab" class="tab-content active">
+                <div class="admin-section">
+                    <h3>添加新车辆</h3>
+                    <form id="addVehicleForm">
+                        <input type="text" placeholder="车辆名称" id="vehicleName" required>
+                        <select id="vehicleType">
+                            <option value="premium">超级跑车</option>
+                            <option value="luxury">豪华轿车</option>
+                            <option value="sport">运动汽车</option>
+                            <option value="offroad">越野车</option>
+                            <option value="motorcycle">摩托车</option>
+                            <option value="classic">经典车</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                        <input type="text" placeholder="请输入自定义车辆类型" id="customVehicleType" class="hidden" style="margin-top: 10px;">
+                        <select id="vehicleFont" style="margin-top: 10px;">
+                            <option value="default">默认字体</option>
+                            <option value="impact">Impact (粗体美式)</option>
+                            <option value="bebas">Bebas Neue (现代美式)</option>
+                            <option value="oswald">Oswald (工业美式)</option>
+                            <option value="anton">Anton (厚重美式)</option>
+                            <option value="racing">Racing Sans One (赛车风格)</option>
+                            <option value="orbitron">Orbitron (科技美式)</option>
+                            <option value="teko">Teko (简约美式)</option>
+                        </select>
+                        <div id="fontPreview" class="font-preview" style="display: none;">字体预览 - FONT PREVIEW</div>
+                        <div class="image-upload-section">
+                            <label for="vehicleImage" class="image-upload-label">
+                                <i class="fas fa-camera"></i> 上传车辆照片
+                            </label>
+                            <input type="file" id="vehicleImage" accept="image/*" style="display: none;">
+                            <div id="imagePreview" class="image-preview hidden">
+                                <img id="previewImg" src="" alt="预览图片">
+                                <button type="button" id="removeImage" class="remove-image-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="text" placeholder="最高速度 (如: 300 km/h)" id="vehicleSpeed">
+                        <input type="text" placeholder="马力 (如: 500 HP)" id="vehiclePower">
+                        <input type="text" placeholder="引擎类型 (如: 双电机)" id="vehicleEngine">
+                        <input type="text" placeholder="赞助商" id="vehicleSponsor">
+                        <input type="text" placeholder="价格 (如: $100,000)" id="vehiclePrice">
+                        <button type="submit">添加车辆</button>
+                    </form>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>现有车辆</h3>
+                    <div id="vehiclesList" class="vehicles-list">
+                        <!-- 车辆列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 赞助商管理 -->
+            <div id="sponsors-tab" class="tab-content">
+                <div class="admin-section">
+                    <h3>赞助商设置</h3>
+                    <form id="sponsorForm">
+                        <select id="sponsorLevel">
+                            <option value="diamond">钻石赞助商</option>
+                            <option value="platinum">白金赞助商</option>
+                            <option value="gold">黄金赞助商</option>
+                        </select>
+                        <input type="text" placeholder="赞助商名称" id="sponsorName" required>
+                        <button type="submit">更新赞助商</button>
+                    </form>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>当前赞助商</h3>
+                    <div class="sponsor-preview">
+                        <p><strong>钻石赞助商:</strong> <span id="diamondSponsor">超级汽车集团</span></p>
+                        <p><strong>白金赞助商:</strong> <span id="platinumSponsor">极速改装店</span></p>
+                        <p><strong>黄金赞助商:</strong> <span id="goldSponsor">梦想车行</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 账单管理 -->
+            <div id="bills-tab" class="tab-content">
+                <div class="admin-section">
+                    <h3>订单统计</h3>
+                    <div class="bills-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="totalOrders">0</div>
+                                <div class="stat-label">总订单数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="totalRevenue">¥0</div>
+                                <div class="stat-label">总收入</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="todayOrders">0</div>
+                                <div class="stat-label">今日订单</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>订单管理</h3>
+                    <div class="bills-filters">
+                        <input type="text" id="billSearch" placeholder="搜索订单号、车辆名称...">
+                        <select id="billPaymentFilter">
+                            <option value="all">所有支付方式</option>
+                            <option value="wechat">微信支付</option>
+                            <option value="alipay">支付宝</option>
+                        </select>
+                        <select id="billDateFilter">
+                            <option value="all">所有时间</option>
+                            <option value="today">今天</option>
+                            <option value="week">本周</option>
+                            <option value="month">本月</option>
+                        </select>
+                        <button id="exportBills" class="admin-btn">导出账单</button>
+                    </div>
+                    <div id="billsList" class="bills-list">
+                        <!-- 账单列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div id="settings-tab" class="tab-content">
+                <div class="admin-section">
+                    <h3>网站设置</h3>
+                    <form id="settingsForm">
+                        <input type="text" placeholder="网站标题" id="siteTitle" value="Grizzly 充电车辆展示">
+                        <input type="text" placeholder="副标题" id="siteSubtitle" value="Premium Electric Vehicles Collection">
+                        <input type="text" placeholder="赞助商章节标题" id="sponsorsSectionTitle" value="感谢给我们的充电">
+                        <input type="text" placeholder="车辆章节标题" id="vehiclesSectionTitle" value="充电车辆展示">
+                        <textarea placeholder="底部版权信息" id="copyrightText">© 2024 Grizzly 充电车辆展示 | 感谢所有赞助商的支持</textarea>
+                        <button type="submit">保存设置</button>
+                    </form>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>全局字体设置</h3>
+                    <div class="global-font-section">
+                        <select id="globalFont" style="margin-bottom: 15px;">
+                            <option value="default">默认字体</option>
+                            <option value="impact">Impact (粗体美式)</option>
+                            <option value="bebas">Bebas Neue (现代美式)</option>
+                            <option value="oswald">Oswald (工业美式)</option>
+                            <option value="anton">Anton (厚重美式)</option>
+                            <option value="racing">Racing Sans One (赛车风格)</option>
+                            <option value="orbitron">Orbitron (科技美式)</option>
+                            <option value="teko">Teko (简约美式)</option>
+                        </select>
+                        <div id="globalFontPreview" class="global-font-preview" style="display: none;">
+                            <div class="preview-item">标题预览 - TITLE PREVIEW</div>
+                            <div class="preview-item">车辆信息预览 - Vehicle Info</div>
+                            <div class="preview-item">赞助商信息预览 - Sponsor Info</div>
+                        </div>
+                        <button type="button" id="applyGlobalFont" class="admin-btn">应用全局字体</button>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h3>支付二维码管理</h3>
+                    <div class="payment-qr-section">
+                        <div class="qr-upload-item">
+                            <h4><i class="fab fa-weixin"></i> 微信支付二维码</h4>
+                            <div class="qr-upload-area">
+                                <label for="wechatQR" class="qr-upload-label">
+                                    <i class="fas fa-qrcode"></i> 上传微信收款码
+                                </label>
+                                <input type="file" id="wechatQR" accept="image/*" style="display: none;">
+                                <div id="wechatQRPreview" class="qr-preview hidden">
+                                    <img id="wechatQRImg" src="" alt="微信收款码">
+                                    <button type="button" id="removeWechatQR" class="remove-qr-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="qr-upload-item">
+                            <h4><i class="fab fa-alipay"></i> 支付宝二维码</h4>
+                            <div class="qr-upload-area">
+                                <label for="alipayQR" class="qr-upload-label">
+                                    <i class="fas fa-qrcode"></i> 上传支付宝收款码
+                                </label>
+                                <input type="file" id="alipayQR" accept="image/*" style="display: none;">
+                                <div id="alipayQRPreview" class="qr-preview hidden">
+                                    <img id="alipayQRImg" src="" alt="支付宝收款码">
+                                    <button type="button" id="removeAlipayQR" class="remove-qr-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3>数据管理</h3>
+                    <button id="exportData" class="admin-btn">导出数据</button>
+                    <button id="importData" class="admin-btn">导入数据</button>
+                    <button id="resetData" class="admin-btn danger">重置数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 管理面板遮罩 -->
+    <div id="adminOverlay" class="admin-overlay hidden"></div>
+
+    <div class="container">
+        <!-- 头部标题 -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <span class="title-text">Grizzly</span>
+                    <span class="title-highlight">充电车辆</span>
+                    <span class="title-text">展示</span>
+                </h1>
+                <div class="subtitle">Premium Electric Vehicles Collection</div>
+            </div>
+            <div class="header-bg"></div>
+        </header>
+
+        <!-- 赞助商信息 -->
+        <section class="sponsors-section">
+            <h2 class="section-title">感谢给我们的充电</h2>
+            <div class="sponsors-grid">
+                <!-- 赞助商卡片将通过JavaScript动态生成 -->
+            </div>
+        </section>
+
+        <!-- 删除这部分重复的支付代码 -->
+        <!-- 车辆展示 -->
+        <section class="vehicles-section">
+            <h2 class="section-title">充电车辆展示</h2>
+            <div class="vehicles-grid" id="vehiclesGrid">
+                <!-- 车辆卡片将通过JavaScript动态生成 -->
+            </div>
+            <!-- 删除下面这部分代码 -->
+            <!-- <div class="detail-price" id="detailPrice">¥0</div>
+            <div class="payment-section">
+                <h4>支付方式</h4>
+                <div class="payment-methods">
+                    <div class="payment-method" data-method="wechat">
+                        <i class="fab fa-weixin"></i>
+                        <span>微信支付</span>
+                    </div>
+                    <div class="payment-method" data-method="alipay">
+                        <i class="fab fa-alipay"></i>
+                        <span>支付宝</span>
+                    </div>
+                </div>
+            </div> -->
+        </section>
+
+        <!-- 底部信息 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 Grizzly 充电车辆展示 | 感谢所有赞助商的支持</p>
+                <div class="footer-info">
+                    <span class="developer-info">开发:米尔</span>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fas fa-gamepad"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
