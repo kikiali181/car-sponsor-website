@@ -8,7 +8,7 @@ let globalFontSettings = {
 const DATA_CONFIG = {
     dataUrl: './data.json',
     githubRepo: 'kikiali81/car-sponsor-website', // 你的GitHub仓库
-    githubToken: null // 暂时不需要，只读取
+    githubToken: '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' // 你的GitHub Token
 };
 
 // 从GitHub加载数据
